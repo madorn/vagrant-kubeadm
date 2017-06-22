@@ -17,11 +17,6 @@ sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni
 
 kubeadm reset
 
-while [ ! -f /vagrant/token ]
-do
-sleep 2
-done
-
 source /vagrant/token
 
 kubeadm join --token $TOKEN 192.168.56.60:6443
