@@ -7,7 +7,7 @@ deb http://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
-sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni
+sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni jq
 kubeadm reset
 kubeadm init --apiserver-advertise-address 192.168.56.60
 chmod 777 /etc/kubernetes/admin.conf
