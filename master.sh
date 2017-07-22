@@ -11,4 +11,4 @@ sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni jq
 kubeadm reset
 kubeadm init --apiserver-advertise-address 192.168.56.60
 chmod 777 /etc/kubernetes/admin.conf
-echo "export TOKEN=`kubeadm token list | awk 'FNR == 2 {print $1}'`" >> /vagrant/token
+echo "export TOKEN=`kubeadm token list | awk 'FNR == 2 {print $1}'`" > /vagrant/token
