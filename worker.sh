@@ -10,4 +10,4 @@ sudo apt-get update
 sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni
 kubeadm reset
 source /vagrant/token
-kubeadm join --discovery-token-unsafe-skip-ca-verification --token $TOKEN 192.168.56.60:6443
+kubeadm join --token $TOKEN 192.168.56.60:6443 --discovery-token-unsafe-skip-ca-verification
