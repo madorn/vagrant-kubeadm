@@ -9,7 +9,7 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get update
 sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni jq
 kubeadm reset
-kubeadm init --apiserver-advertise-address=192.168.56.60 --pod-network-cidr=192.168.0.0/16
+kubeadm init --feature-gates=SupportIPVSProxyMode=true --apiserver-advertise-address=192.168.56.60 --pod-network-cidr=192.168.0.0/16
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
