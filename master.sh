@@ -8,6 +8,7 @@ EOF
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
 sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni jq
+ip route replace default via 192.168.56.1 dev eth1
 kubeadm reset
 kubeadm init --apiserver-advertise-address=192.168.56.60 --pod-network-cidr=192.168.0.0/16
 mkdir -p $HOME/.kube
