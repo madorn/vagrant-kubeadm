@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "geerlingguy/centos7"
 
 # Begin node1
   config.vm.define "kubeadm-master1" do |node1|
@@ -28,9 +28,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
    node1.vm.provider "virtualbox" do |vb, override|
 	override.vm.network "private_network", ip: "192.168.56.60"
         vb.customize [ "modifyvm", :id, "--cpus", "1" ]
-        vb.customize [ "modifyvm", :id, "--memory", "4000" ]
-	vb.customize [ "modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+        vb.customize [ "modifyvm", :id, "--memory", "2048" ]
+	vb.customize [ "modifyvm", :id, "--nic2", "natnetwork", "--nat-network2", "k8s"]
    end
+   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
    node1.vm.provision :shell, path: "master.sh"
 end
 # End node1
@@ -55,8 +56,8 @@ end
    node2.vm.provider "virtualbox" do |vb, override|
         override.vm.network "private_network", ip: "192.168.56.61"
         vb.customize [ "modifyvm", :id, "--cpus", "1" ]
-        vb.customize [ "modifyvm", :id, "--memory", "2000" ]
-        vb.customize [ "modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+        vb.customize [ "modifyvm", :id, "--memory", "2048" ]
+        vb.customize [ "modifyvm", :id, "--nic2", "natnetwork", "--nat-network2", "k8s"]
    end
    node2.vm.provision :shell, path: "worker.sh"
 end
@@ -83,8 +84,8 @@ end
    node3.vm.provider "virtualbox" do |vb, override|
         override.vm.network "private_network", ip: "192.168.56.62"
         vb.customize [ "modifyvm", :id, "--cpus", "1" ]
-        vb.customize [ "modifyvm", :id, "--memory", "2000" ]
-        vb.customize [ "modifyvm", :id, "--hostonlyadapter2", "vboxnet0"]
+        vb.customize [ "modifyvm", :id, "--memory", "2048" ]
+        vb.customize [ "modifyvm", :id, "--nic2", "natnetwork", "--nat-network2", "k8s"]
    end
    node3.vm.provision :shell, path: "worker.sh"
 end

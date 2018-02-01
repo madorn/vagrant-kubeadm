@@ -1,16 +1,44 @@
 #!/bin/bash -eux
-sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb http://apt.kubernetes.io/ kubernetes-xenial main
+swapoff -a
+modprobe ip_vs ip_vs_rr ip_vs_wrr ip_vs_sh nf_conntrack_ipv4
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
 EOF
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update
-sudo apt-get install -y docker-ce kubelet kubeadm kubernetes-cni jq
-ip route replace default via 192.168.56.1 dev eth1
+sysctl --system
+yum install -y docker
+systemctl enable docker && systemctl start docker
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+setenforce 0
+yum install -y kubelet kubeadm kubectl
+systemctl enable kubelet && systemctl start kubelet
+systemctl stop NetworkManager
+ip route del default
+ip route add default via 192.168.56.1 dev enp0s8
+cat <<EOF > config.yaml
+kind: MasterConfiguration
+apiVersion: kubeadm.k8s.io/v1alpha1
+api:
+  advertiseAddress: "192.168.56.60"
+  bindPort: 443
+networking:
+  podSubnet: "10.2.0.0/16"
+kubernetesVersion: "v1.9.1"
+kubeProxy:
+  config:
+    featureGates: SupportIPVSProxyMode=true
+    mode: "ipvs"
+EOF
 kubeadm reset
-kubeadm init --feature-gates=SupportIPVSProxyMode=true --apiserver-advertise-address=192.168.56.60 --pod-network-cidr=192.168.0.0/16
+kubeadm init --config config.yaml
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
