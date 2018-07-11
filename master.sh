@@ -26,7 +26,7 @@ EOF
 
 setenforce 0
 
-yum install -y kubelet kubeadm kubectl
+yum install -y kubelet kubeadm kubectl vim
 
 systemctl enable kubelet && systemctl start kubelet
 
