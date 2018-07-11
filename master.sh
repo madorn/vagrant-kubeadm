@@ -43,3 +43,26 @@ systemctl stop NetworkManager
 
 ip route del default
 ip route add default via 192.168.56.1 dev enp0s8
+
+
+cat <<EOF > config.yaml
+kind: MasterConfiguration
+apiVersion: kubeadm.k8s.io/v1alpha2
+api:
+  advertiseAddress: "192.168.56.60"
+  bindPort: 443
+networking:
+  podSubnet: "10.2.0.0/16"
+kubernetesVersion: "v1.11.0"
+EOF
+
+kubeadm init --config config.yaml
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+echo "export TOKEN=`kubeadm token list | awk 'FNR == 2 {print $1}'`" > /vagrant/token
+
+sleep 60
+
+kubectl apply -f https://raw.githubusercontent.com/madorn/vagrant-kubeadm/master/calico3.1.3.yaml
