@@ -346,7 +346,7 @@ spec:
       serviceAccountName: calico-kube-controllers
       containers:
         - name: calico-kube-controllers
-          image: quay.io/calico/kube-controllers:v2.0.0-68-gfe414c7
+          image: quay.io/calico/kube-controllers:v3.1.3
           env:
             # The location of the Calico etcd cluster.
             - name: ETCD_ENDPOINTS
