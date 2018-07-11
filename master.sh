@@ -11,23 +11,17 @@ EOF
 
 sysctl --system
 
-
 sudo yum install -y yum-utils \
   device-mapper-persistent-data \
   lvm2
 
-
- sudo yum-config-manager \
+sudo yum-config-manager \
     --add-repo \
     https://download.docker.com/linux/centos/docker-ce.repo
 
- 
 sudo yum -y install docker-ce
 
-
 systemctl enable docker && systemctl start docker
-
-
 
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
