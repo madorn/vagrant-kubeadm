@@ -23,6 +23,6 @@ systemctl enable kubelet && systemctl start kubelet
 systemctl stop NetworkManager
 ip route del default
 ip route add default via 192.168.56.1 dev enp0s8
-kubeadm reset
-source /vagrant/token
-kubeadm join --token $TOKEN 192.168.56.60:443 --discovery-token-unsafe-skip-ca-verification
+#kubeadm reset
+#source /vagrant/token
+#kubeadm join --token $TOKEN 192.168.56.60:443 --discovery-token-unsafe-skip-ca-verification

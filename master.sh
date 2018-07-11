@@ -11,8 +11,23 @@ EOF
 
 sysctl --system
 
-yum install -y docker
+
+sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+
+
+ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+ 
+sudo yum -y install docker-ce
+
+
 systemctl enable docker && systemctl start docker
+
+
 
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -34,30 +49,3 @@ systemctl stop NetworkManager
 
 ip route del default
 ip route add default via 192.168.56.1 dev enp0s8
-
-cat <<EOF > config.yaml
-kind: MasterConfiguration
-apiVersion: kubeadm.k8s.io/v1alpha1
-api:
-  advertiseAddress: "192.168.56.60"
-  bindPort: 443
-networking:
-  podSubnet: "10.2.0.0/16"
-kubernetesVersion: "v1.9.1"
-kubeProxy:
-  config:
-    featureGates: SupportIPVSProxyMode=true
-    mode: "ipvs"
-EOF
-
-kubeadm reset
-kubeadm init --config config.yaml
-
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-echo "export TOKEN=`kubeadm token list | awk 'FNR == 2 {print $1}'`" > /vagrant/token
-
-sleep 60
-
-kubectl apply -f https://raw.githubusercontent.com/madorn/vagrant-kubeadm/master/calico3.0.1.yaml 
