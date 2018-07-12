@@ -137,21 +137,6 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: Endpoints
-metadata:
-  labels:
-    k8s-app: calico-etcd
-  name: calico-etcd
-  namespace: kube-system
-subsets:
-- addresses:
-  - ip: 192.168.56.60
-  ports:
-  - port: 6666
-    protocol: TCP
-
----
 # This manifest installs the calico/node container, as well
 # as the Calico CNI plugins and network config on
 # each master and worker node in a Kubernetes cluster.
